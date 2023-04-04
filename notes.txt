@@ -1,0 +1,1 @@
+Possibly fake MPU6050, changing SaveAddress in MPU6050::PID to 0x77 makes calibration work perfectly for some reason
