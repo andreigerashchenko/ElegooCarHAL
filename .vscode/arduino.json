@@ -1,6 +1,0 @@
-{
-    "port": "COM5",
-    "board": "arduino:avr:uno",
-    "programmer": "arduino:arduinoisporg",
-    "sketch": "CAR_HAL_DEV.ino"
-}
