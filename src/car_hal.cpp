@@ -63,17 +63,17 @@ void CAR_HAL::Motor_Drive(float speed, float turn) {
   int16_t left, right, speedFwd, speedTurn;
 
   if (speed > 0) {
-    speedFwd = map(speed, 0, 1, 0, MOTOR_MAX_PWM);
+    speedFwd = mmap(speed, 0, 1, 0, MOTOR_MAX_PWM);
   } else if (speed < 0) {
-    speedFwd = map(speed, 0, -1, 0, -MOTOR_MAX_PWM);
+    speedFwd = mmap(speed, 0, -1, 0, -MOTOR_MAX_PWM);
   } else {
     speedFwd = 0;
   }
 
   if (turn > 0) {
-    speedTurn = map(turn, 0, 1, 0, MOTOR_MAX_PWM);
+    speedTurn = mmap(turn, 0, 1, 0, MOTOR_MAX_PWM);
   } else if (turn < 0) {
-    speedTurn = map(turn, 0, -1, 0, -MOTOR_MAX_PWM);
+    speedTurn = mmap(turn, 0, -1, 0, -MOTOR_MAX_PWM);
   } else {
     speedTurn = 0;
   }
