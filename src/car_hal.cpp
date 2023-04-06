@@ -3,6 +3,13 @@
 // Motor functions
 #if USE_MOTORS
 /**
+ * @brief Float to int16_t map function
+ */
+int16_t mmap(float in, float inMin, float inMax, int16_t outMin, int16_t outMax) {
+  return (int16_t)(in - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+/**
  * @brief Configures motor pins as outputs
  */
 void CAR_HAL::Motor_Setup() {

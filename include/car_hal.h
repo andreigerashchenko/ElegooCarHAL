@@ -73,8 +73,8 @@
 #if USE_BATTERY
 #define PIN_Battery A0  // Battery voltage pin
 #define Battery_Input_Scale \
-  0.0374714891  // (1 / (1.5k / (10k + 1.5k))) * (5 / 1023)
-#endif          // USE_BATTERY
+    0.0374714891  // (1 / (1.5k / (10k + 1.5k))) * (5 / 1023)
+#endif            // USE_BATTERY
 
 // USE_LED
 #if USE_LED
@@ -103,88 +103,93 @@
 // ==================== CAR_HAL CLASS DEFINITION ====================
 
 class CAR_HAL {
- private:
+   private:
+#if USE_MOTORS
+    int16_t mmap(float in, float inMin, float inMax, int16_t outMin,
+                 int16_t outMax); // Map function for motor control
+#endif
+
 #if USE_SERVOS
-  Servo Servo_1;  // Ultrasonic sensor servo
-  Servo Servo_2;  // Unused servo
-#endif            // USE_SERVOS
+    Servo Servo_1;  // Ultrasonic sensor servo
+    Servo Servo_2;  // Unused servo
+#endif              // USE_SERVOS
 
 #if USE_LED
-  CRGB leds[1];  // USE_LED
-#endif           // USE_LED
+    CRGB leds[1];  // USE_LED
+#endif             // USE_LED
 
 #if USE_MPU6050
-  uint32_t lastReading;
-  float gyroXangle, gyroYangle, gyroZangle;  // Euler angles
-  MPU6050 mpu;
+    uint32_t lastReading;
+    float gyroXangle, gyroYangle, gyroZangle;  // Euler angles
+    MPU6050 mpu;
 #endif  // USE_MPU6050
 
- public:
+   public:
 #if USE_MOTORS
-  // Motor functions
-  void Motor_Setup(void);
-  void Motor_Control(int16_t left_PWM, int16_t right_PWM);
-  void Motor_Drive(float speed, float turn);
+    // Motor functions
+    void Motor_Setup(void);
+    void Motor_Control(int16_t left_PWM, int16_t right_PWM);
+    void Motor_Drive(float speed, float turn);
 #endif  // USE_MOTORS
 
 #if USE_SERVOS
-  // Servo functions
-  void Servo_Setup(uint8_t id, bool reset);
-  void Servo_Control(uint8_t id, int16_t pos);
-  int16_t Servo_GetPos(uint8_t id);
-  void Servo_Disable(uint8_t id);
+    // Servo functions
+    void Servo_Setup(uint8_t id, bool reset);
+    void Servo_Control(uint8_t id, int16_t pos);
+    int16_t Servo_GetPos(uint8_t id);
+    void Servo_Disable(uint8_t id);
 #endif  // USE_SERVOS
 
 #if USE_ULTRASONIC
-  // Ultrasonic sensor functions
-  void US_Setup(void);
-  float US_GetDistance(void);
+    // Ultrasonic sensor functions
+    void US_Setup(void);
+    float US_GetDistance(void);
 #endif  // USE_ULTRASONIC
 
 #if USE_BATTERY
-  // Battery functions
-  void Battery_Setup(void);
-  float Battery_GetVoltage(void);
+    // Battery functions
+    void Battery_Setup(void);
+    float Battery_GetVoltage(void);
 #endif  // USE_BATTERY
 
 #if USE_LED
-  // USE_LED functions
-  void LED_Setup(void);
-  void LED_Control(uint8_t red, uint8_t green, uint8_t blue);
-  void LED_Control(uint8_t red, uint8_t green, uint8_t blue, float brightness);
+    // USE_LED functions
+    void LED_Setup(void);
+    void LED_Control(uint8_t red, uint8_t green, uint8_t blue);
+    void LED_Control(uint8_t red, uint8_t green, uint8_t blue, float brightness);
 #endif  // USE_LED
 
 #if USE_MPU6050
-  // USE_MPU6050 functions
-  void MPU6050_Setup(bool test = false);
-  void MPU6050_Calibrate(bool quick = false);
-  void MPU6050_GetData(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx,
-                       int16_t* gy, int16_t* gz);
-  void MPU6050_GetAccel(int16_t* ax, int16_t* ay, int16_t* az);
-  void MPU6050_GetGyro(int16_t* gx, int16_t* gy, int16_t* gz);
-  double MPU6050_GetXAccel(void);
-  double MPU6050_GetYAccel(void);
-  double MPU6050_GetZAccel(void);
-  double MPU6050_GetXGyro(void);
-  double MPU6050_GetYGyro(void);
-  double MPU6050_GetZGyro(void);
-  float MPU6050_GetTemp(void);
-  float MPU6050_EulerX(void);
-  float MPU6050_EulerY(void);
-  float MPU6050_EulerZ(void);
-  void MPU6050_EulerStep(void);
+    // USE_MPU6050 functions
+    void MPU6050_Setup(bool test = false);
+    void MPU6050_Calibrate(bool quick = false);
+    void MPU6050_GetData(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx,
+                         int16_t* gy, int16_t* gz);
+    void MPU6050_GetAccel(int16_t* ax, int16_t* ay, int16_t* az);
+    void MPU6050_GetGyro(int16_t* gx, int16_t* gy, int16_t* gz);
+    double MPU6050_GetXAccel(void);
+    double MPU6050_GetYAccel(void);
+    double MPU6050_GetZAccel(void);
+    double MPU6050_GetXGyro(void);
+    double MPU6050_GetYGyro(void);
+    double MPU6050_GetZGyro(void);
+    float MPU6050_GetTemp(void);
+    float MPU6050_EulerX(void);
+    float MPU6050_EulerY(void);
+    float MPU6050_EulerZ(void);
+    void MPU6050_EulerStep(void);
 #endif  // USE_MPU6050
 
 #if USE_LINE_TRACKING
-  // Line tracking functions
-  void LineTracking_Setup(void);
-  int16_t LineTracking_GetValue(uint8_t sensor);
+    // Line tracking functions
+    void LineTracking_Setup(void);
+    int16_t LineTracking_GetValue(uint8_t sensor);
 #endif  // USE_LINE_TRACKING
 
 #if USE_IR
-  // IR functions
-  void IR_Setup(void);
-  bool IR_GetMessage(uint16_t* message);
+    // IR functions
+    void IR_Setup(void);
+    bool IR_GetMessage(uint16_t* message);
 #endif  // USE_IR
 };
 #endif  // CAR_HAL_H
