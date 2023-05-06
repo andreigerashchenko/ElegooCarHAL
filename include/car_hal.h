@@ -3,13 +3,14 @@
 
 // Set enabled features here
 #define USE_MOTORS 1
+#define USE_MPU6050 1
+#define USE_PID 1
 #define USE_SERVOS 1
 #define USE_ULTRASONIC 0
 #define USE_BATTERY 0
 #define USE_LED 0
-#define USE_MPU6050 1
 #define USE_LINE_TRACKING 0
-#define USE_IR 1
+#define USE_IR 0
 
 // Set IR protocol here
 // #define DECODE_DENON        // Includes Sharp
@@ -84,7 +85,7 @@
 
 // USE_MPU6050
 #if USE_MPU6050
-#include <MPU6050.h>
+#include <MPU6050_6Axis_MotionApps20.h>
 #endif  // USE_MPU6050
 
 // USE_LINE_TRACKING
@@ -106,7 +107,7 @@ class CAR_HAL {
    private:
 #if USE_MOTORS
     int16_t mmap(float in, float inMin, float inMax, int16_t outMin,
-                 int16_t outMax); // Map function for motor control
+                 int16_t outMax);  // Map function for motor control
 #endif
 
 #if USE_SERVOS
@@ -119,10 +120,30 @@ class CAR_HAL {
 #endif             // USE_LED
 
 #if USE_MPU6050
-    uint32_t lastReading;
-    float gyroXangle, gyroYangle, gyroZangle;  // Euler angles
-    MPU6050 mpu;
-#endif  // USE_MPU6050
+    MPU6050 mpu;  // MPU6050 object
+
+    bool dmpReady = false;   // set true if DMP init was successful
+    uint8_t devStatus;       // return status after each device operation (0 = success, !0 = error)
+    uint8_t fifoBuffer[64];  // FIFO storage buffer
+
+    Quaternion q;         // [w, x, y, z]         quaternion container
+    VectorInt16 aa;       // [x, y, z]            accel sensor measurements
+    VectorInt16 aaReal;   // [x, y, z]            gravity-free accel sensor measurements
+    VectorInt16 aaWorld;  // [x, y, z]            world-frame accel sensor measurements
+    VectorFloat gravity;  // [x, y, z]            gravity vector
+    float ypr[3];         // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+#endif                    // USE_MPU6050
+
+#if USE_PID
+    float PID_kP;  // PID constants
+    float PID_kI;
+    float PID_kD;
+    float PID_iTerm;     // PID integral term
+    float PID_setpoint;  // PID setpoint
+    float PID_output;    // PID output
+    float PID_lastError;
+    uint32_t PID_lastTime;
+#endif  // USE_PID
 
    public:
 #if USE_MOTORS
@@ -131,6 +152,16 @@ class CAR_HAL {
     void Motor_Control(int16_t left_PWM, int16_t right_PWM);
     void Motor_Drive(float speed, float turn);
 #endif  // USE_MOTORS
+
+#if USE_PID
+#if !USE_MOTORS || !USE_MPU6050
+#error "USE_PID requires USE_MOTORS and USE_MPU6050"
+#endif  // !USE_MOTORS || !USE_MPU6050
+    // PID functions
+    void PID_Setup(float kP, float kI, float kD, float setpoint);
+    void PID_Control(float setpoint);
+    void PID_Update();
+#endif  // USE_PID
 
 #if USE_SERVOS
     // Servo functions
@@ -161,23 +192,14 @@ class CAR_HAL {
 
 #if USE_MPU6050
     // USE_MPU6050 functions
-    void MPU6050_Setup(bool test = false);
-    void MPU6050_Calibrate(bool quick = false);
-    void MPU6050_GetData(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx,
-                         int16_t* gy, int16_t* gz);
+    void MPU6050_Setup();
+    void MPU6050_Calibrate();
+    void MPU6050_Update();
+    void MPU6050_GetData(int16_t* ax, int16_t* ay, int16_t* az, float* gx,
+                         float* gy, float* gz);
     void MPU6050_GetAccel(int16_t* ax, int16_t* ay, int16_t* az);
-    void MPU6050_GetGyro(int16_t* gx, int16_t* gy, int16_t* gz);
-    double MPU6050_GetXAccel(void);
-    double MPU6050_GetYAccel(void);
-    double MPU6050_GetZAccel(void);
-    double MPU6050_GetXGyro(void);
-    double MPU6050_GetYGyro(void);
-    double MPU6050_GetZGyro(void);
-    float MPU6050_GetTemp(void);
-    float MPU6050_EulerX(void);
-    float MPU6050_EulerY(void);
-    float MPU6050_EulerZ(void);
-    void MPU6050_EulerStep(void);
+    void MPU6050_GetGyro(float* gx, float* gy, float* gz);
+    float MPU6050_GetTemp();
 #endif  // USE_MPU6050
 
 #if USE_LINE_TRACKING
