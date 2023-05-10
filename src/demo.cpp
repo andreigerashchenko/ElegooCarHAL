@@ -24,5 +24,5 @@ void loop() {
     Serial.print(F(" Z: "));
     Serial.println(z);
     car.PID_Update();
-    car.Motor_Control(0, 0);
+    car.Motor_Control(75, 75);
 }

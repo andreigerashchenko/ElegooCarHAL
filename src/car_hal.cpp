@@ -37,11 +37,11 @@ void CAR_HAL::Motor_Setup() {
 void CAR_HAL::Motor_Control(int16_t left, int16_t right) {
     digitalWrite(PIN_Motor_STBY, HIGH);  // Enable motor driver
 
-    // Mix in PID output
-    #if USE_PID
+// Mix in PID output
+#if USE_PID
     left += (int16_t)PID_output;
     right -= (int16_t)PID_output;
-    #endif  // USE_PID
+#endif  // USE_PID
 
     // Limit PWM values
     if (left > MOTOR_MAX_PWM) {
@@ -56,19 +56,19 @@ void CAR_HAL::Motor_Control(int16_t left, int16_t right) {
     }
 
     if (left > 0) {
-        digitalWrite(PIN_Motor_A_IN1, HIGH);
-        analogWrite(PIN_Motor_A_PWM, left);
+        digitalWrite(PIN_Motor_B_IN1, HIGH);
+        analogWrite(PIN_Motor_B_PWM, left);
     } else {
-        digitalWrite(PIN_Motor_A_IN1, LOW);
-        analogWrite(PIN_Motor_A_PWM, -left);
+        digitalWrite(PIN_Motor_B_IN1, LOW);
+        analogWrite(PIN_Motor_B_PWM, -left);
     }
 
     if (right > 0) {
-        digitalWrite(PIN_Motor_B_IN1, HIGH);
-        analogWrite(PIN_Motor_B_PWM, right);
+        digitalWrite(PIN_Motor_A_IN1, HIGH);
+        analogWrite(PIN_Motor_A_PWM, right);
     } else {
-        digitalWrite(PIN_Motor_B_IN1, LOW);
-        analogWrite(PIN_Motor_B_PWM, -right);
+        digitalWrite(PIN_Motor_A_IN1, LOW);
+        analogWrite(PIN_Motor_A_PWM, -right);
     }
 }
 
@@ -120,7 +120,7 @@ void CAR_HAL::Motor_Drive(float speed, float turn) {
 #if USE_PID
 /**
  * @brief Initializes PID controller
- * 
+ *
  * @param kP Proportional gain
  * @param kI Integral gain
  * @param kD Derivative gain
@@ -162,22 +162,6 @@ void CAR_HAL::PID_Update() {
     D = (error - PID_lastError) / dt;
 
     PID_output = PID_kP * P + PID_kI * PID_iTerm + PID_kD * D;
-
-    Serial.print(F("Input: "));
-    Serial.print(ypr[0]);
-    Serial.print(F(" Setpoint: "));
-    Serial.print(PID_setpoint);
-    Serial.print(F(" Error: "));
-    Serial.print(error);
-    Serial.print(F(" P: "));
-    Serial.print(P);
-    Serial.print(F(" I: "));
-    Serial.print(PID_kI * PID_iTerm);
-    Serial.print(F(" D: "));
-    Serial.print(D);
-    Serial.print(F(" Output: "));
-    Serial.println(PID_output);
-
 
     PID_lastError = error;
     PID_lastTime = now;
@@ -366,7 +350,7 @@ void CAR_HAL::MPU6050_Setup() {
     }
 
     this->MPU6050_Calibrate();
-    
+
     Serial.println(F("Enabling DMP..."));
     mpu.setDMPEnabled(true);
     Serial.println(F("DMP enabled!"));

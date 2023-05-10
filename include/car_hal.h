@@ -47,8 +47,8 @@
 #if USE_MOTORS
 #define PIN_Motor_A_PWM 5
 #define PIN_Motor_B_PWM 6
-#define PIN_Motor_A_IN1 8
-#define PIN_Motor_B_IN1 7
+#define PIN_Motor_A_IN1 7
+#define PIN_Motor_B_IN1 8
 #define PIN_Motor_STBY 3
 #define MOTOR_MAX_PWM 255
 #endif
