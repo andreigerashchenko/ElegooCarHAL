@@ -157,6 +157,13 @@ void CAR_HAL::PID_Update() {
     // Use yaw as PID input
     error = PID_setpoint - ypr[0];
 
+    // Wrap error to [-180, 180]
+    if (error > 180) {
+        error -= 360;
+    } else if (error < -180) {
+        error += 360;
+    }
+
     P = error;
     PID_iTerm += error * dt;
     D = (error - PID_lastError) / dt;
