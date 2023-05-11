@@ -6,9 +6,9 @@
 #define USE_MPU6050 1
 #define USE_PID 1
 #define USE_SERVOS 1
-#define USE_ULTRASONIC 0
-#define USE_BATTERY 0
-#define USE_LED 0
+#define USE_ULTRASONIC 1
+#define USE_BATTERY 1
+#define USE_LED 1
 #define USE_LINE_TRACKING 0
 #define USE_IR 0
 
@@ -72,7 +72,7 @@
 
 // Battery
 #if USE_BATTERY
-#define PIN_Battery A0  // Battery voltage pin
+#define PIN_Battery A3  // Battery voltage pin
 #define Battery_Input_Scale \
     0.0374714891  // (1 / (1.5k / (10k + 1.5k))) * (5 / 1023)
 #endif            // USE_BATTERY
